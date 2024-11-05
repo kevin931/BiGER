@@ -1,0 +1,13 @@
+# R Project Files
+.Rproj.user/
+.Rhistory
+
+# VS Code
+.vscode/
+
+# RCPP
+src/*.o
+src/*.dll
+
+# Local Files
+test.R

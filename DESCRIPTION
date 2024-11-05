@@ -1,0 +1,18 @@
+Package: BiGER
+Type: Package
+Title: Bayesian Rank Aggregation in Genomics with Extended Ranking Schemes
+Version: 0.0
+Date: 2022-12-12
+Author: Kevin Wang
+Maintainer: Kevin Wang <kevinwang@smu.com>
+Description: One paragraph description of what
+     the package does as one or more full
+     sentences.
+License: MIT
+Imports: Rcpp (>= 1.0.9)
+Depends: RcppTN
+LinkingTo:
+    Rcpp,
+    RcppTN
+RoxygenNote: 7.3.1
+Encoding: UTF-8
