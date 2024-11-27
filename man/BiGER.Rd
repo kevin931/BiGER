@@ -68,9 +68,9 @@ in matrices with rows as iterations and columns as parameters.
 }
 \description{
 This is the BiGER algorithm using a Gibbs sampler. For boundary approximation,
-see [bBiGER()]; for efficiency, use [vBiGER()] for a fast variational
+see \link[BiGER]{bBiGER()}; for efficiency, use \link[BiGER]{vBiGER()} for a fast variational
 inference-based method.
 }
 \seealso{
-[bBiGER()] for bBiGER and [vBiGER()] VI-based vBiGER.
+\link[BiGER]{bBiGER()} for bBiGER and \link[BiGER]{vBiGER()} VI-based vBiGER.
 }

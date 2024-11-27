@@ -1,7 +1,7 @@
 #' BiGER algorithm for gene list aggregation.
 #' 
 #' This is the BiGER algorithm using a Gibbs sampler. For boundary approximation,
-#' see [bBiGER()]; for efficiency, use [vBiGER()] for a fast variational
+#' see \link[BiGER]{bBiGER()}; for efficiency, use \link[BiGER]{vBiGER()} for a fast variational
 #' inference-based method.
 #'
 #' @param r A integer rank matrix with rows as genes and columns as studies. All
@@ -32,7 +32,7 @@
 #' and optionally the full chains of \eqn{\mu} and \eqn{\sigma^2}. All genes and
 #' studies are reported in the order given in `r`. The full chains are reported
 #' in matrices with rows as iterations and columns as parameters.
-#' @seealso [bBiGER()] for bBiGER and [vBiGER()] VI-based vBiGER.
+#' @seealso \link[BiGER]{bBiGER()} for bBiGER and \link[BiGER]{vBiGER()} VI-based vBiGER.
 #' @useDynLib BiGER
 #' @export
 

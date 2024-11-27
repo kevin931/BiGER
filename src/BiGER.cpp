@@ -487,7 +487,7 @@ List cpp_BiGER(const NumericMatrix &r,
 // Bounded BiGER (bBiGER) algorithm with fixed boundaries. 
 // 
 // This is the internal C++ implementation of bounded BiGER (bBiGER) algorithm
-// using a Gibbs sampler. The officially R implementation adds a few quality-of-life
+// using a Gibbs sampler. The official R implementation adds a few quality-of-life
 // improvements, such as making defaults of `mu` and `sigma2` optional as well as removing
 // empty outputs when necessary. This version may have a marginally small performance
 // advantage.
@@ -655,7 +655,7 @@ List cpp_bBiGER(const NumericMatrix &r,
 // Variational BiGER (vBiGER) for efficient rank aggregation.
 // 
 // This is the internal C++ implementation of Variational BiGER (vBiGER) algorithm
-// using Mean-Field Variational Inference. The officially R implementation adds a
+// using Mean-Field Variational Inference. The official R implementation adds a
 // few quality-of-life improvements, such as making defaults of `mu` and `sigma2_inv`
 // optional. This version may have a marginally small performance advantage. For
 // the original BiGER algorithm based on MCMC, see [BiGER()] or [bBiGER()].

@@ -68,5 +68,6 @@ This is the bounded BiGER (bBiGER) algorithm using a Gibbs sampler. This is
 different from BiGER by fixing the boundaries of \eqn{\omega_{gj}} a priori.
 }
 \seealso{
-[BiGER()] for the vanilla BiGER and [vBiGER()] VI-based vBiGER.
+\link[BiGER]{BiGER()} for the vanilla BiGER with Gibbs sampling and
+\link[BiGER]{vBiGER()} VI-based vBiGER.
 }

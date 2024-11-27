@@ -52,8 +52,9 @@ study variance \eqn{\sigma^2}, and the convergence monitoring of `delta`.
 }
 \description{
 This is the vBiGER algorithm implemented using Mean-Field Variational Inference.
-For the original BiGER algorithm based on MCMC, see [BiGER()] or [bBiGER()].
+For the original BiGER algorithm based on MCMC, see \link[BiGER]{BiGER()} or
+\link[BiGER]{bBiGER()}.
 }
 \seealso{
-[BiGER()] and [bBiGER()] MCMC-based algorithms.
+\link[BiGER]{BiGER()} and \link[BiGER]{bBiGER()} MCMC-based algorithms.
 }

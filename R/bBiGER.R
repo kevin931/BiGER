@@ -30,7 +30,8 @@
 #' and optionally the full chains of \eqn{\mu} and \eqn{\sigma^2}. All genes and
 #' studies are reported in the order given in `r`. The full chains are reported
 #' in matrices with rows as iterations and columns as parameters.
-#' @seealso [BiGER()] for the vanilla BiGER and [vBiGER()] VI-based vBiGER.
+#' @seealso \link[BiGER]{BiGER()} for the vanilla BiGER with Gibbs sampling and
+#' \link[BiGER]{vBiGER()} VI-based vBiGER.
 #' @useDynLib BiGER
 #' @export
 

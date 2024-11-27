@@ -1,7 +1,8 @@
 #' Variational BiGER (vBiGER) for efficient rank aggregation.
 #' 
 #' This is the vBiGER algorithm implemented using Mean-Field Variational Inference.
-#' For the original BiGER algorithm based on MCMC, see [BiGER()] or [bBiGER()].
+#' For the original BiGER algorithm based on MCMC, see \link[BiGER]{BiGER()} or
+#' \link[BiGER]{bBiGER()}.
 #'
 #' @param r A integer rank matrix with rows as genes and columns as studies. All
 #' ties are parametrized as ties with the `min` method. See [preprocess_genelist()]
@@ -23,7 +24,7 @@
 #' shown when set to `-1` as the default.
 #' @return A list containing VI-estimated latent importance \eqn{\mu},
 #' study variance \eqn{\sigma^2}, and the convergence monitoring of `delta`.
-#' @seealso [BiGER()] and [bBiGER()] MCMC-based algorithms.
+#' @seealso \link[BiGER]{BiGER()} and \link[BiGER]{bBiGER()} MCMC-based algorithms.
 #' @useDynLib BiGER
 #' @export
 
