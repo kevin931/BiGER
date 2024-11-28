@@ -47,8 +47,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_bBiGER
-List cpp_bBiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2, const double alpha, const double beta, const bool save_chains, const bool save_burnin, const int iter, const int burnin, const int verbose);
-RcppExport SEXP _BiGER_cpp_bBiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP save_chainsSEXP, SEXP save_burninSEXP, SEXP iterSEXP, SEXP burninSEXP, SEXP verboseSEXP) {
+List cpp_bBiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2, const double alpha, const double beta, const std::string method_bound, const bool save_chains, const bool save_burnin, const int iter, const int burnin, const int verbose);
+RcppExport SEXP _BiGER_cpp_bBiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP method_boundSEXP, SEXP save_chainsSEXP, SEXP save_burninSEXP, SEXP iterSEXP, SEXP burninSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,18 +59,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type sigma2(sigma2SEXP);
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type method_bound(method_boundSEXP);
     Rcpp::traits::input_parameter< const bool >::type save_chains(save_chainsSEXP);
     Rcpp::traits::input_parameter< const bool >::type save_burnin(save_burninSEXP);
     Rcpp::traits::input_parameter< const int >::type iter(iterSEXP);
     Rcpp::traits::input_parameter< const int >::type burnin(burninSEXP);
     Rcpp::traits::input_parameter< const int >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_bBiGER(r, n_r, n_u, mu, sigma2, alpha, beta, save_chains, save_burnin, iter, burnin, verbose));
+    rcpp_result_gen = Rcpp::wrap(cpp_bBiGER(r, n_r, n_u, mu, sigma2, alpha, beta, method_bound, save_chains, save_burnin, iter, burnin, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_vBiGER
-List cpp_vBiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2_inv, double alpha, double beta, int max_iter, double delta, int verbose);
-RcppExport SEXP _BiGER_cpp_vBiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2_invSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP max_iterSEXP, SEXP deltaSEXP, SEXP verboseSEXP) {
+List cpp_vBiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2_inv, double alpha, double beta, const std::string method_bound, int max_iter, double delta, int verbose);
+RcppExport SEXP _BiGER_cpp_vBiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2_invSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP method_boundSEXP, SEXP max_iterSEXP, SEXP deltaSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -81,10 +82,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const NumericVector& >::type sigma2_inv(sigma2_invSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type method_bound(method_boundSEXP);
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< int >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_vBiGER(r, n_r, n_u, mu, sigma2_inv, alpha, beta, max_iter, delta, verbose));
+    rcpp_result_gen = Rcpp::wrap(cpp_vBiGER(r, n_r, n_u, mu, sigma2_inv, alpha, beta, method_bound, max_iter, delta, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -92,8 +94,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_BiGER_init_w_r", (DL_FUNC) &_BiGER_init_w_r, 3},
     {"_BiGER_cpp_BiGER", (DL_FUNC) &_BiGER_cpp_BiGER, 13},
-    {"_BiGER_cpp_bBiGER", (DL_FUNC) &_BiGER_cpp_bBiGER, 12},
-    {"_BiGER_cpp_vBiGER", (DL_FUNC) &_BiGER_cpp_vBiGER, 10},
+    {"_BiGER_cpp_bBiGER", (DL_FUNC) &_BiGER_cpp_bBiGER, 13},
+    {"_BiGER_cpp_vBiGER", (DL_FUNC) &_BiGER_cpp_vBiGER, 11},
     {NULL, NULL, 0}
 };
 

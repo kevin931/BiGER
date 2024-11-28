@@ -1,4 +1,5 @@
 #include <cmath>
+#include <stdexcept>
 #include <Rcpp.h>
 #include <RcppTN.h>
 // [[Rcpp::depends(RcppTN)]]
@@ -503,6 +504,9 @@ List cpp_BiGER(const NumericMatrix &r,
 // distribution. Defaults to `1`.
 // @param beta The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 // distribution. Defaults to `1`.
+// @param method_bound A string as either 'normal' or 'uniform' to indicate the method for
+// finding boundaries. If the input string does not exactly match the options, am error
+// is thrown.
 // @param save_chains Whether to return the full chains of the MCMC run. If `FALSE`, only
 // posterior means of parameters are returned. For large studies, saving the full
 // chains can have a considerable RAM cost. Defaults to `FALSE`.
@@ -525,6 +529,7 @@ List cpp_bBiGER(const NumericMatrix &r,
                 const NumericVector &sigma2,
                 const double alpha=1.0,
 				const double beta=1.0,
+				const std::string method_bound="normal",
 				const bool save_chains=false,
 				const bool save_burnin=false,
                 const int iter=5000,
@@ -576,7 +581,17 @@ List cpp_bBiGER(const NumericMatrix &r,
 	}
 
 	// Bounds
-	List bounds = find_boundaries_norm(r, n_r, n_u, ranked);
+	List bounds;
+	
+	if (method_bound == "normal") {
+	  bounds = find_boundaries_norm(r, n_r, n_u, ranked);
+	} else if (method_bound == "uniform") {
+	  bounds = find_boundaries(r, n_r, n_u, ranked);
+	} else {
+	  throw std::invalid_argument("The boundary method must be either 'normal' or 'uniform'.");
+	}
+	
+	
 	NumericMatrix lower = bounds[0];
 	NumericMatrix upper = bounds[1];
 
@@ -671,6 +686,9 @@ List cpp_bBiGER(const NumericMatrix &r,
 // distribution. Defaults to `1`.
 // @param beta The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 // distribution. Defaults to `1`.
+// @param method_bound A string as either 'normal' or 'uniform' to indicate the method for
+// finding boundaries. If the input string does not exactly match the options, am error
+// is thrown.
 // @param max_iter The maximum number of VI iterations to run. Defaults to `100`.
 // @param delta The numerical tolerance as the stopping criteria. This is calculated
 // by the average change (delta) of the approximated mean parameters \eqn{\mu_g}.
@@ -688,6 +706,7 @@ List cpp_vBiGER(const NumericMatrix &r,
 			  const NumericVector &sigma2_inv,
               double alpha=1.0,
 			  double beta=1.0,
+			  const std::string method_bound="normal",
               int max_iter=100,
 			  double delta=0.0001,
               int verbose=-1) {
@@ -712,7 +731,15 @@ List cpp_vBiGER(const NumericMatrix &r,
 	}
 
 	// Bounds
-	List bounds = find_boundaries_norm(r, n_r, n_u, ranked);
+	List bounds;
+	if (method_bound == "normal") {
+	  bounds = find_boundaries_norm(r, n_r, n_u, ranked);
+	} else if (method_bound == "uniform") {
+	  bounds = find_boundaries(r, n_r, n_u, ranked);
+	} else {
+	  throw std::invalid_argument("The boundary method must be either 'normal' or 'uniform'.");
+	}
+	
 	NumericMatrix lower = bounds[0];
 	NumericMatrix upper = bounds[1];
 

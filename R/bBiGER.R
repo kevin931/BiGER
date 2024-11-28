@@ -14,6 +14,9 @@
 #' distribution. Defaults to `1`.
 #' @param beta The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 #' distribution. Defaults to `1`.
+#' @param method_bound A string as either 'normal' or 'uniform' to indicate the method for
+#' finding boundaries. If the input string does not exactly match the options, am error
+#' is thrown.
 #' @param chains The number of chains to run. Defaults to 1.
 #' @param save_chains Whether to return the full chains of the MCMC run. If `FALSE`, only
 #' posterior means of parameters are returned. For large studies, saving the full
@@ -42,6 +45,7 @@ bBiGER <- function(r,
                    sigma2=NULL,
                    alpha=1.0,
                    beta=1.0,
+                   method_bound="normal",
                    save_chains=F,
                    save_burnin=F,
                    chains=1,
@@ -70,6 +74,7 @@ bBiGER <- function(r,
                                                  sigma2 = sigma2,
                                                  alpha = alpha,
                                                  beta = beta,
+                                                 method_bound = method_bound,
                                                  save_chains = save_chains,
                                                  save_burnin = save_burnin,
                                                  iter = iter,

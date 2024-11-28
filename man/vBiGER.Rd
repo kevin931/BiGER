@@ -12,6 +12,7 @@ vBiGER(
   sigma2_inv = NULL,
   alpha = 1,
   beta = 1,
+  method_bound = "normal",
   max_iter = 100,
   delta = 1e-04,
   verbose = -1
@@ -36,6 +37,10 @@ distribution. Defaults to `1`.}
 
 \item{beta}{The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 distribution. Defaults to `1`.}
+
+\item{method_bound}{A string as either 'normal' or 'uniform' to indicate the method for
+finding boundaries. If the input string does not exactly match the options, am error
+is thrown.}
 
 \item{max_iter}{The maximum number of VI iterations to run. Defaults to `100`.}
 

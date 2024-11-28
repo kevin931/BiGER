@@ -12,6 +12,7 @@ bBiGER(
   sigma2 = NULL,
   alpha = 1,
   beta = 1,
+  method_bound = "normal",
   save_chains = F,
   save_burnin = F,
   chains = 1,
@@ -38,6 +39,10 @@ distribution. Defaults to `1`.}
 
 \item{beta}{The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 distribution. Defaults to `1`.}
+
+\item{method_bound}{A string as either 'normal' or 'uniform' to indicate the method for
+finding boundaries. If the input string does not exactly match the options, am error
+is thrown.}
 
 \item{save_chains}{Whether to return the full chains of the MCMC run. If `FALSE`, only
 posterior means of parameters are returned. For large studies, saving the full

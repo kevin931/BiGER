@@ -16,6 +16,9 @@
 #' distribution. Defaults to `1`.
 #' @param beta The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 #' distribution. Defaults to `1`.
+#' @param method_bound A string as either 'normal' or 'uniform' to indicate the method for
+#' finding boundaries. If the input string does not exactly match the options, am error
+#' is thrown.
 #' @param max_iter The maximum number of VI iterations to run. Defaults to `100`.
 #' @param delta The numerical tolerance as the stopping criteria. This is calculated
 #' by the average change (delta) of the approximated mean parameters \eqn{\mu_g}.
@@ -35,6 +38,7 @@ vBiGER <- function(r,
                    sigma2_inv=NULL,
                    alpha=1.0,
                    beta=1.0,
+                   method_bound="normal",
                    max_iter=100,
                    delta=0.0001,
                    verbose=-1) {
@@ -59,6 +63,7 @@ vBiGER <- function(r,
                     sigma2_inv = sigma2_inv,
                     alpha = alpha,
                     beta = beta,
+                    method_bound = method_bound,
                     max_iter = max_iter,
                     delta = delta,
                     verbose = verbose))
