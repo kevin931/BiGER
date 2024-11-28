@@ -255,7 +255,7 @@ NumericMatrix init_w_gibbs(const NumericMatrix &lower,
 // advantage.
 //
 // @param r A integer rank matrix with rows as genes and columns as studies. All
-// ties are parametrized as ties with the `min` method. See [preprocess_genelist()]
+// ties are parametrized as ties with the `min` method. See \link[BiGER]{preprocess_genelist()}
 // for constructing this matrix.
 // @param n_r A vector containing the number of ranked items in each gene list.
 // @param n_u A vector containing the number of unranked items in each gene list.
@@ -493,7 +493,7 @@ List cpp_BiGER(const NumericMatrix &r,
 // advantage.
 //
 // @param r A integer rank matrix with rows as genes and columns as studies. All
-// ties are parametrized as ties with the `min` method. See [preprocess_genelist()]
+// ties are parametrized as ties with the `min` method. See \link[BiGER]{preprocess_genelist()}
 // for constructing this matrix.
 // @param n_r A vector containing the number of ranked items in each gene list.
 // @param n_u A vector containing the number of unranked items in each gene list.
@@ -657,11 +657,10 @@ List cpp_bBiGER(const NumericMatrix &r,
 // This is the internal C++ implementation of Variational BiGER (vBiGER) algorithm
 // using Mean-Field Variational Inference. The official R implementation adds a
 // few quality-of-life improvements, such as making defaults of `mu` and `sigma2_inv`
-// optional. This version may have a marginally small performance advantage. For
-// the original BiGER algorithm based on MCMC, see [BiGER()] or [bBiGER()].
+// optional. This version may have a marginally small performance advantage.
 //
 // @param r A integer rank matrix with rows as genes and columns as studies. All
-// ties are parametrized as ties with the `min` method. See [preprocess_genelist()]
+// ties are parametrized as ties with the `min` method. See \link[BiGER]{preprocess_genelist()}
 // for constructing this matrix.
 // @param n_r A vector containing the number of ranked items in each gene list.
 // @param n_u A vector containing the number of unranked items in each gene list.
@@ -774,193 +773,3 @@ List cpp_vBiGER(const NumericMatrix &r,
 
 	return L;
 }
-
-
-
-// List cpp_BiGER_full(const NumericMatrix &r,
-//                     const NumericVector &n_r,
-//                     const NumericVector &n_u,
-//                     NumericMatrix &W,
-//                     const NumericVector &mu0,
-//                     const NumericVector &sigma_s0,
-// 					const double alpha=1.0,
-// 					const double beta=1.0,
-// 					const bool save_chains=false,
-// 					const bool save_burnin=false,
-//                     const int iter=5000,
-//                     const int burnin=2500,
-//                     const int verbose=-1) {
-
-// 	int num_genes = r.rows();
-// 	int num_studies = r.cols();
-// 	int iter_kept = iter - burnin;
-
-// 	// Init Mu
-// 	NumericVector Mu(num_genes);
-// 	Mu = mu0;
-// 	NumericVector Mu_post(num_genes);
-// 	Mu_post.fill(0);
-
-// 	// Init Sigma_S2
-// 	NumericVector Sigma_s2(num_studies);
-// 	Sigma_s2 = sigma_s0;
-// 	NumericVector Sigma_s2_post(num_studies);
-// 	Sigma_s2_post.fill(0);
-
-// 	// Chains
-// 	int chain_dim1;
-// 	int chain_dim2;
-// 	int chain_dim3;
-
-// 	if (save_chains) {
-// 		if (save_burnin) {
-// 			chain_dim1 = iter;
-// 		} else {
-// 			chain_dim1 = iter_kept;
-// 		}
-// 		chain_dim2 = num_genes;
-// 		chain_dim3 = num_studies;
-// 	} else {
-// 		chain_dim1 = 0;
-// 		chain_dim2 = 0;
-// 		chain_dim3 = 0;
-// 	}
-
-// 	NumericMatrix Mu_keep(chain_dim1, chain_dim2);
-// 	NumericMatrix Sigma_s2_keep(chain_dim1, chain_dim3);
-
-// 	List ranked_index = get_ranked_index(r, n_r, true);
-// 	List unranked_index = get_unranked_index(r, n_r, n_u, false);
-// 	List bottom_index = get_bottom_index(r, n_r, n_u, false);
-
-// 	for (int m=1; m<iter; m++) {
-
-// 		if (verbose != -1 && m%verbose == 0) {
-// 			Rcout << m << "\n";
-// 		}
-
-// 		// Update Mu for each gene
-// 		for (int g=0; g<num_genes; g++) {
-// 			NumericVector temp = W(g, _)/Sigma_s2;
-// 			double c = sum(temp);
-
-// 			temp = 1/Sigma_s2;
-// 			double d =  sum(temp) + 1;
-// 			Mu(g) = rnorm(1, c/d, sqrt(1/d))(0);
-
-// 			if (save_chains & save_burnin) {
-// 				Mu_keep(m, _) = Mu;
-// 			}
-			
-// 			if (m >= burnin) {
-// 				Mu_post(g) += Mu(g)/iter_kept;
-// 				if (save_chains & !save_burnin) {
-// 					Mu_keep(m-burnin, _) = Mu;
-// 				}
-// 			}
-// 		}
-
-// 		// Update sigma_s2
-// 		for (int s=0; s<num_studies; s++) {
-// 			NumericVector temp = pow(W(_,s) - Mu, 2);
-// 			double rate = sum(temp)/2+beta;
-// 			double shape = num_genes/2+alpha;
-// 			Sigma_s2(s) = 1/rgamma(1, shape, 1/rate)(0);
-
-// 			if (save_chains & save_burnin) {
-// 				Sigma_s2_keep(m, _) = Sigma_s2;
-// 			}
-
-// 			if (m >= burnin) {
-// 				Sigma_s2_post(s) += Sigma_s2(s)/iter_kept;
-// 				if (save_chains & !save_burnin) {
-// 					Sigma_s2_keep(m-burnin, _) = Sigma_s2;
-// 				}
-// 			}
-// 		}
-
-// 		// Update W
-// 		for (int s=0; s<num_studies; s++) {
-// 			double lower;
-// 			double upper;
-
-// 			IntegerVector study_ranked_index = ranked_index[s];
-// 			IntegerVector study_bottom_index = bottom_index[s];
-// 			IntegerVector study_unranked_index = unranked_index[s];
-
-// 			// Top Ranked List
-// 			if (n_r[s] > 0) {
-// 				NumericVector genes(n_r[s]);
-// 				genes = seq_along(genes); 
-// 				NumericVector index = sample(genes, n_r[s]);
-
-// 				for (int g=0; g<index.length(); g++) {
-// 					// The first Gene
-// 					if (index[g] == 1) {
-// 						lower = W(study_ranked_index[1], s);
-// 						upper = R_PosInf;
-// 					} else if (index[g] == n_r[s]) {
-// 						// The Last gene
-// 						if (n_r[s] < num_genes) {
-// 							if (n_u[s] > 0) {
-// 								lower = max(matrix_vector_index(W, study_unranked_index, s));
-// 							} else {
-// 								lower = max(matrix_vector_index(W, study_bottom_index, s));
-// 							}
-// 						} else {
-// 							lower = R_NegInf;
-// 						}
-// 						upper = W(study_ranked_index[n_r[s]-2], s);
-
-// 					} else {
-// 						lower = W(study_ranked_index[index[g]], s);
-// 						upper = W(study_ranked_index[index[g]-2], s);
-// 					}
-
-// 					W(study_ranked_index[index[g]-1], s) = RcppTN::rtn1(Mu(study_ranked_index[index[g]-1]), sqrt(Sigma_s2(s)), lower, upper);
-// 				}
-// 			}
-
-// 			//unranked List
-// 			if (n_u[s] > 0) {
-// 				if (n_r[s] + n_u[s] < num_genes) {
-// 					lower = max(matrix_vector_index(W, study_bottom_index, s));
-// 				} else {
-// 					lower = R_NegInf;
-// 				}
-
-// 				if (n_r[s] == 0) {
-// 					upper = R_PosInf;
-// 				} else {
-// 					upper = W(study_ranked_index[n_r[s]-1], s);
-// 				}
-
-// 				for (int i=0; i<study_unranked_index.length(); i++) {
-// 					W(study_unranked_index[i], s) = RcppTN::rtn1(Mu(study_unranked_index[i]), sqrt(Sigma_s2(s)), lower, upper);
-// 				}
-// 			}
-
-// 			//Bottom Ties
-// 			if (n_r[s] + n_u[s] < num_genes) {
-// 				lower = R_NegInf;
-// 				// Whether three are unranked items
-// 				if (n_u[s] > 0) {
-// 					upper = min(matrix_vector_index(W, study_unranked_index, s));
-// 				} else {
-// 					upper = W(study_ranked_index[n_r[s]-1], s);
-// 				}
-
-// 				for (int i=0; i<study_bottom_index.length(); i++) {
-// 					W(study_bottom_index[i], s) = RcppTN::rtn1(Mu(study_bottom_index[i]), sqrt(Sigma_s2(s)), lower, upper);
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	List L = List::create(Named("mu_post") = Mu_post,
-// 						  _["sigma2_post"]  = Sigma_s2_post,
-// 						  _["mu"]  = Mu_keep,
-// 						  _["sigma2"]  = Sigma_s2_keep);
-
-// 	return L;
-// }
