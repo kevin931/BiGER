@@ -5,9 +5,11 @@ Version: 0.0
 Date: 2022-12-12
 Author: Kevin Wang
 Maintainer: Kevin Wang <kevinwang@smu.com>
-Description: One paragraph description of what
-     the package does as one or more full
-     sentences.
+Description: We propose BiGER, a fast and accurate Bayesian rank aggregation method for meta-analysis of ordinal data,
+especially gene lists. Using a Bayesian hierarchical framework combined with variational inference, BiGER efficiently
+aggregates large-scale gene lists with good accuracy, while the variance estimation procedure provides valuable insights
+on source reliability for researchers. This package provides three variants of the algorithm with BiGER as the traditional
+Gibbs sampling, bBiGER for bounded BiGER, and vBiGER for Variational BiGER.
 License: MIT
 Imports: Rcpp (>= 1.0.9)
 Depends: RcppTN
