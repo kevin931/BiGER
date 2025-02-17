@@ -285,7 +285,7 @@ NumericMatrix init_w_gibbs(const NumericMatrix &lower,
 // in matrices with rows as iterations and columns as parameters.
 // @seealso [bBiGER()] for bBiGER and [vBiGER()] VI-based vBiGER.
 // [[Rcpp::export]]
-List cpp_BiGER(const NumericMatrix &r,
+List cpp_gBiGER(const NumericMatrix &r,
            	   const NumericVector &n_r,
            	   const NumericVector &n_u,
            	   NumericMatrix &W,
@@ -699,17 +699,17 @@ List cpp_bBiGER(const NumericMatrix &r,
 // study variance \eqn{\sigma^2}, and the convergence monitoring of `delta`.
 // @seealso [BiGER()] and [bBiGER()] MCMC-based algorithms.
 // [[Rcpp::export]]
-List cpp_vBiGER(const NumericMatrix &r,
-              const NumericVector &n_r,
-              const NumericVector &n_u,
-			  const NumericVector &mu,
-			  const NumericVector &sigma2_inv,
-              double alpha=1.0,
-			  double beta=1.0,
-			  const std::string method_bound="normal",
-              int max_iter=100,
-			  double delta=0.0001,
-              int verbose=-1) {
+List cpp_BiGER(const NumericMatrix &r,
+               const NumericVector &n_r,
+               const NumericVector &n_u,
+			   const NumericVector &mu,
+			   const NumericVector &sigma2_inv,
+               double alpha=1.0,
+			   double beta=1.0,
+			   const std::string method_bound="normal",
+               int max_iter=100,
+			   double delta=0.0001,
+               int verbose=-1) {
 
 	int num_genes = r.rows();
 	int num_studies = r.cols();
@@ -796,6 +796,7 @@ List cpp_vBiGER(const NumericMatrix &r,
 
 	List L = List::create(Named("mu") = m_mu,
 		   				  _["sigma2_inv"]  = e_sigma2_inv,
+						  _["sigma2"] = e_sigma2,
 		   				  _["convergence"] = convergence);
 
 	return L;
