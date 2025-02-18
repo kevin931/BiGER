@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <Rcpp.h>
 #include <RcppTN.h>
-// [[Rcpp::depends(RcppTN)]]
 
 using namespace Rcpp;
 using namespace RcppTN;
@@ -247,9 +246,9 @@ NumericMatrix init_w_gibbs(const NumericMatrix &lower,
 }
 
 
-// BiGER algorithm for gene list aggregation.
+// Gibbs Sampling gBiGER algorithm for gene list aggregation.
 // 
-// This is the internal C++ implementation of the BiGER algorithm
+// This is the internal C++ implementation of the gBiGER algorithm
 // using a Gibbs sampler. The officially R implementation adds a few quality-of-life
 // improvements, such as making defaults of `mu`, `sigma2`, and `w` optional as well as removing
 // empty outputs when necessary. This version may have a marginally small performance
@@ -283,21 +282,21 @@ NumericMatrix init_w_gibbs(const NumericMatrix &lower,
 // and optionally the full chains of \eqn{\mu} and \eqn{\sigma^2}. All genes and
 // studies are reported in the order given in `r`. The full chains are reported
 // in matrices with rows as iterations and columns as parameters.
-// @seealso [bBiGER()] for bBiGER and [vBiGER()] VI-based vBiGER.
+// @seealso \link[BiGER]{bBiGER()} for bBiGER and \link[BiGER]{BiGER()} VI-based BiGER.
 // [[Rcpp::export]]
 List cpp_gBiGER(const NumericMatrix &r,
-           	   const NumericVector &n_r,
-           	   const NumericVector &n_u,
-           	   NumericMatrix &W,
-           	   const NumericVector &mu,
-           	   const NumericVector &sigma2,
-           	   const double alpha=1.0,
-		   	   const double beta=1.0,
-			   const bool save_chains=false,
-			   const bool save_burnin=false,
-           	   const int iter=20000,
-           	   const int burnin=10000,
-           	   const int verbose=-1) {
+           	    const NumericVector &n_r,
+           	    const NumericVector &n_u,
+           	    NumericMatrix &W,
+           	    const NumericVector &mu,
+           	    const NumericVector &sigma2,
+           	    const double alpha=1.0,
+		   	    const double beta=1.0,
+			    const bool save_chains=false,
+			    const bool save_burnin=false,
+           	    const int iter=20000,
+           	    const int burnin=10000,
+           	    const int verbose=-1) {
 
 	int num_genes = r.rows();
 	int num_studies = r.cols();
@@ -591,7 +590,6 @@ List cpp_bBiGER(const NumericMatrix &r,
 	  throw std::invalid_argument("The boundary method must be either 'normal' or 'uniform'.");
 	}
 	
-	
 	NumericMatrix lower = bounds[0];
 	NumericMatrix upper = bounds[1];
 
@@ -667,7 +665,7 @@ List cpp_bBiGER(const NumericMatrix &r,
 }
 
 
-// Variational BiGER (vBiGER) for efficient rank aggregation.
+// BiGER for efficient rank aggregation.
 // 
 // This is the internal C++ implementation of Variational BiGER (vBiGER) algorithm
 // using Mean-Field Variational Inference. The official R implementation adds a
@@ -697,7 +695,7 @@ List cpp_bBiGER(const NumericMatrix &r,
 // shown when set to `-1` as the default.
 // @return A list containing VI-estimated latent importance \eqn{\mu},
 // study variance \eqn{\sigma^2}, and the convergence monitoring of `delta`.
-// @seealso [BiGER()] and [bBiGER()] MCMC-based algorithms.
+// @seealso \link[BiGER]{gBiGER()} and \link[BiGER]{bBiGER()} MCMC-based algorithms.
 // [[Rcpp::export]]
 List cpp_BiGER(const NumericMatrix &r,
                const NumericVector &n_r,
