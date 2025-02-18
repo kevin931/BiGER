@@ -125,6 +125,75 @@ preprocess_genelist <- function(genelist,
 }
 
 
+
+#' Preprocess differential expression results from Seurat.
+#' 
+#' This function is used to generate a single gene list from a differential
+#' analysis conducted using Seurat. Specifically, we expect results from a
+#' the `FindMarkers` function, and we rank the genes to provide a gene list
+#' using all provided criteria.
+#' 
+#' Note that this function supports only a single gene list, not a cohort of
+#' studies with many gene lists. This is done because many study designs
+#' exist, and the corresponding Seurat pipelines differ. If it is desired to
+#' run comparisons and generate many gene lists from the same Seurat object,
+#' it is recommended to conduct call this function multiple times with separate
+#' differential analyses.
+#'  
+#' @param de_results: The differential analysis results from Seurat's `FindMarkers`
+#' function. This must be a dataframe in the same format as the original outputs.
+#' @param fold_change: Whether to use 'all', 'positive', or 'negative' fold
+#' change.
+#' @param rank_by: The column by which to rank the genes. It must be one of
+#' 'p_val', 'p_val_adj', or 'avg_log2FC'. If 'avg_log2FC' is chosen, the order
+#' will be decreasing if `fold_change` is set to 'all' or 'positive'; otherwise,
+#' the ranking is done using increasing values. 
+#' @returns A character vector containing ranked genes in order.
+#' @export
+
+preprocess_seurat <- function(de_results,
+                              fold_change = c("all", "positive", "negative"),
+                              rank_by = c("p_val", "p_val_adj", "avg_log2FC")) {
+  
+  # Sanity Check
+  if (length(fold_change) > 1) {
+    fold_change <- fold_change[1]
+  }
+  
+  if (length(rank_by) > 1) {
+    rank_by <- rank_by[1]
+  }
+  
+  if (!fold_change %in% c("all", "positive", "negative")) {
+    stop("'fold_change' parameter must be one of 'all', 'positive', or 'negative'.")
+  }
+
+  if (!rank_by %in% c("all", "positive", "negative")) {
+    stop("'rank_by' parameter must be one of 'p_val', 'p_val_adj', 'avg_log2FC'.")
+  }
+  
+  # Fold Change
+  if (fold_change == "positive") {
+    de_results <- subset(de_results, avg_log2FC > 0)
+  }
+
+  if (fold_change == "negative") {
+    de_results <- subset(de_results, avg_log2FC < 0)
+  }
+
+  # Ranking
+  if (rank_by == "avg_log2FC" && fold_change %in% c("positive", "all")) {
+    decreasing <- TRUE
+  }  else {
+    decreasing <- FALSE
+  }
+
+  de_results <- de_results[order(de_results[[rank_by]], decreasing = decreasing),]
+
+  return(rownames(de_results))
+}
+
+
 # rank_to_genelist <- function(r, genes, n_r, n_u, mixed_method="discard") {
 #   # This function converts a rank matrix to a genelist, which is the reverse
 #   # process to the `preprocess_genelist` function.
