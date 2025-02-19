@@ -719,8 +719,10 @@ List cpp_BiGER(const NumericMatrix &r,
 	NumericVector rate(num_studies);
 	NumericVector shape(num_studies);
 	NumericVector e_sigma2_inv(num_studies);
+	NumericVector e_sigma2(num_studies);
 	NumericVector convergence;
 	e_sigma2_inv = clone(sigma2_inv);
+	e_sigma2 = 1/e_sigma2_inv;
 
 	// Ranked
 	LogicalMatrix ranked(num_genes, num_studies);
@@ -773,6 +775,7 @@ List cpp_BiGER(const NumericMatrix &r,
 			rate[s] = sum(temp)+beta;
 			shape[s] = sum(ranked(_,s))/2+alpha;
 			e_sigma2_inv(s) = shape[s]/rate[s];
+			e_sigma2(s) = rate[s]/(shape[s]-1);
 		}
 
 		// Update W
