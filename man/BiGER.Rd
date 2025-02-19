@@ -2,22 +2,19 @@
 % Please edit documentation in R/BiGER.R
 \name{BiGER}
 \alias{BiGER}
-\title{BiGER algorithm for gene list aggregation.}
+\title{BiGER for efficient rank aggregation.}
 \usage{
 BiGER(
   r,
   n_r,
   n_u,
   mu = NULL,
-  sigma2 = NULL,
-  w = NULL,
+  sigma2_inv = NULL,
   alpha = 1,
   beta = 1,
-  save_chains = F,
-  save_burnin = F,
-  chains = 1,
-  iter = 5000,
-  burnin = 2500,
+  method_bound = "normal",
+  max_iter = 100,
+  delta = 1e-04,
   verbose = -1
 )
 }
@@ -32,9 +29,8 @@ for constructing this matrix.}
 
 \item{mu}{The initialization for the global importance vector. Optional.}
 
-\item{sigma2}{The initialization for study variance vector. Optional.}
-
-\item{w}{The initialization for the latent weight matrix. Optional.}
+\item{sigma2_inv}{The initialization for study precision vector (inverse of
+study variance). Optional.}
 
 \item{alpha}{The \eqn{\alpha} (shape) parameter for the Inverse Gamma prior
 distribution. Defaults to `1`.}
@@ -42,35 +38,28 @@ distribution. Defaults to `1`.}
 \item{beta}{The \eqn{\beta} (rate) parameter for the Inverse Gamma prior
 distribution. Defaults to `1`.}
 
-\item{save_chains}{Whether to return the full chains of the MCMC run. If `FALSE`, only
-posterior means of parameters are returned. For large studies, saving the full
-chains can have a considerable RAM cost. Defaults to `FALSE`.}
+\item{method_bound}{A string as either 'normal' or 'uniform' to indicate the method for
+finding boundaries. If the input string does not exactly match the options, am error
+is thrown.}
 
-\item{save_burnin}{Whether to save the burn-in period of the MCMC run, given
-that `save_chains` is set to `TRUE`. This is used mainly for diagnostic
-purposes. Defaults to `FALSE`.}
+\item{max_iter}{The maximum number of VI iterations to run. Defaults to `100`.}
 
-\item{chains}{The number of chains to run. Defaults to 1.}
-
-\item{iter}{The number of MCMC iterations to run. Defaults to `5000`.}
-
-\item{burnin}{The number of iterations to discard as burn-in. Defaults to `2500`.}
+\item{delta}{The numerical tolerance as the stopping criteria. This is calculated
+by the average change (delta) of the approximated mean parameters \eqn{\mu_g}.
+Defaults to `0.0001`.}
 
 \item{verbose}{The number of iteration to print progress. No printouts are
 shown when set to `-1` as the default.}
 }
 \value{
-A nested list containing chains of a MCMC bBiGER run. Each chain
-itself is a list with with posterior mean \eqn{\mu}, posterior mean of \eqn{\sigma^2},
-and optionally the full chains of \eqn{\mu} and \eqn{\sigma^2}. All genes and
-studies are reported in the order given in `r`. The full chains are reported
-in matrices with rows as iterations and columns as parameters.
+A list containing VI-estimated latent importance \eqn{\mu},
+study variance \eqn{\sigma^2}, and the convergence monitoring of `delta`.
 }
 \description{
-This is the BiGER algorithm using a Gibbs sampler. For boundary approximation,
-see \link[BiGER]{bBiGER()}; for efficiency, use \link[BiGER]{vBiGER()} for a fast variational
-inference-based method.
+This is the BiGER algorithm implemented using Mean-Field Variational Inference.
+For the reference BiGER algorithm based on MCMC, see \link[gBiGER]{gBiGER()} or
+\link[BiGER]{bBiGER()}.
 }
 \seealso{
-\link[BiGER]{bBiGER()} for bBiGER and \link[BiGER]{vBiGER()} VI-based vBiGER.
+\link[BiGER]{gBiGER()} and \link[BiGER]{bBiGER()} MCMC-based algorithms.
 }

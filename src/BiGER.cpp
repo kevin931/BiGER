@@ -308,33 +308,27 @@ List cpp_gBiGER(const NumericMatrix &r,
 	NumericVector Mu_post(num_genes);
 	Mu_post.fill(0);
 
-	// Init Sigma_S2
-	NumericVector Sigma_s2(num_studies);
-	Sigma_s2 = sigma2;
-	NumericVector Sigma_s2_post(num_studies);
-	Sigma_s2_post.fill(0);
+	// Init Sigma_S2	
+	NumericMatrix Sigma_s2(num_studies, iter);
+	Sigma_s2(_,0) = sigma2;
 
-	// Chains
-	int chain_dim1;
-	int chain_dim2;
-	int chain_dim3;
-
+	// Save Mu if needed
+	int chain_mu_dim1;
+	int chain_mu_dim2;
 	if (save_chains) {
+		chain_mu_dim1 = num_genes;
 		if (save_burnin) {
-			chain_dim1 = iter;
+			chain_mu_dim2 = iter;
 		} else {
-			chain_dim1 = iter_kept;
+			chain_mu_dim2 = iter_kept;
 		}
-		chain_dim2 = num_genes;
-		chain_dim3 = num_studies;
+		
 	} else {
-		chain_dim1 = 0;
-		chain_dim2 = 0;
-		chain_dim3 = 0;
+		chain_mu_dim1 = 0;
+		chain_mu_dim2 = 0;
 	}
 
-	NumericMatrix Mu_keep(chain_dim1, chain_dim2);
-	NumericMatrix Sigma_s2_keep(chain_dim1, chain_dim3);
+	NumericMatrix Mu_keep(chain_mu_dim1, chain_mu_dim2);
 
 	// Ranked
 	LogicalMatrix ranked(num_genes, num_studies);
@@ -354,24 +348,24 @@ List cpp_gBiGER(const NumericMatrix &r,
 
 		// Update Mu for each gene
 		for (int g=0; g<num_genes; g++) {
-			NumericVector temp = W(g, _)/Sigma_s2;
+			NumericVector temp = W(g, _)/Sigma_s2(_,m-1);
 			temp = temp[ranked(g,_)];
 			double c = sum(temp);
 
-			temp = 1/Sigma_s2;
+			temp = 1/Sigma_s2(_,m-1);
 			temp = temp[ranked(g,_)];
 			double d =  sum(temp) + 1;
 			Mu(g) = rnorm(1, c/d, sqrt(1/d))(0);
+		}
 
-			if (save_chains & save_burnin) {
-				Mu_keep(m, _) = Mu;
-			}
-			
-			if (m >= burnin) {
-				Mu_post(g) += Mu(g)/iter_kept;
-				if (save_chains & !save_burnin) {
-					Mu_keep(m-burnin, _) = Mu;
-				}
+		if (save_chains & save_burnin) {
+			Mu_keep(_,m) = Mu;
+		}
+		
+		if (m >= burnin) {
+			Mu_post += Mu/iter_kept;
+			if (save_chains & !save_burnin) {
+				Mu_keep(_,m-burnin) = Mu;
 			}
 		}
 
@@ -381,18 +375,7 @@ List cpp_gBiGER(const NumericMatrix &r,
 			temp = temp[ranked(_,s)];
 			double rate = sum(temp)/2+beta;
 			double shape = sum(ranked(_,s))/2+alpha;
-			Sigma_s2(s) = 1/rgamma(1, shape, 1/rate)(0);
-
-			if (save_chains & save_burnin) {
-				Sigma_s2_keep(m, _) = Sigma_s2;
-			}
-
-			if (m >= burnin) {
-				Sigma_s2_post(s) += Sigma_s2(s)/iter_kept;
-				if (save_chains & !save_burnin) {
-					Sigma_s2_keep(m-burnin, _) = Sigma_s2;
-				}
-			}
+			Sigma_s2(s,m) = 1/rgamma(1, shape, 1/rate)(0);
 		}
 
 		// Update W
@@ -434,7 +417,7 @@ List cpp_gBiGER(const NumericMatrix &r,
 						upper = W(study_ranked_index[index[g]-2], s);
 					}
 
-					W(study_ranked_index[index[g]-1], s) = RcppTN::rtn1(Mu(study_ranked_index[index[g]-1]), sqrt(Sigma_s2(s)), lower, upper);
+					W(study_ranked_index[index[g]-1], s) = RcppTN::rtn1(Mu(study_ranked_index[index[g]-1]), sqrt(Sigma_s2(s, m)), lower, upper);
 				}
 			}
 
@@ -453,7 +436,7 @@ List cpp_gBiGER(const NumericMatrix &r,
 				}
 
 				for (int i=0; i<study_unranked_index.length(); i++) {
-					W(study_unranked_index[i], s) = RcppTN::rtn1(Mu(study_unranked_index[i]), sqrt(Sigma_s2(s)), lower, upper);
+					W(study_unranked_index[i], s) = RcppTN::rtn1(Mu(study_unranked_index[i]), sqrt(Sigma_s2(s, m)), lower, upper);
 				}
 			}
 
@@ -468,12 +451,31 @@ List cpp_gBiGER(const NumericMatrix &r,
 				}
 
 				for (int i=0; i<study_bottom_index.length(); i++) {
-					W(study_bottom_index[i], s) = RcppTN::rtn1(Mu(study_bottom_index[i]), sqrt(Sigma_s2(s)), lower, upper);
+					W(study_bottom_index[i], s) = RcppTN::rtn1(Mu(study_bottom_index[i]), sqrt(Sigma_s2(s, m)), lower, upper);
 				}
 			}
 		}
 	}
 
+	// Posterior Median for Sigma2
+	NumericVector Sigma_s2_post(num_studies);
+	NumericVector temp;
+	for (int s=0; s<num_studies; s++) {
+		temp = Sigma_s2(s, _);
+		temp = temp[Range(burnin, iter-1)];
+		Sigma_s2_post(s) = median(temp);
+	}
+
+	// Save Sigma2 if needed
+	NumericMatrix Sigma_s2_keep(0,0);
+	if (save_chains) {
+		if (save_burnin) {
+			Sigma_s2_keep = Sigma_s2;
+		} else {
+			Sigma_s2_keep = Sigma_s2(_, Range(burnin, iter-1));
+		}
+		
+	}
 
 	List L = List::create(Named("mu_post") = Mu_post,
 						  _["sigma2_post"]  = Sigma_s2_post,
@@ -545,33 +547,27 @@ List cpp_bBiGER(const NumericMatrix &r,
 	NumericVector Mu_post(num_genes);
 	Mu_post.fill(0);
 
-	// Init Sigma_S2
-	NumericVector Sigma_s2(num_studies);
-	Sigma_s2 = sigma2;
-	NumericVector Sigma_s2_post(num_studies);
-	Sigma_s2_post.fill(0);
+	// Init Sigma_S2	
+	NumericMatrix Sigma_s2(num_studies, iter);
+	Sigma_s2(_,0) = sigma2;
 
-	// Chains
-	int chain_dim1;
-	int chain_dim2;
-	int chain_dim3;
-
+	// Save Mu if needed
+	int chain_mu_dim1;
+	int chain_mu_dim2;
 	if (save_chains) {
+		chain_mu_dim1 = num_genes;
 		if (save_burnin) {
-			chain_dim1 = iter;
+			chain_mu_dim2 = iter;
 		} else {
-			chain_dim1 = iter_kept;
+			chain_mu_dim2 = iter_kept;
 		}
-		chain_dim2 = num_genes;
-		chain_dim3 = num_studies;
+		
 	} else {
-		chain_dim1 = 0;
-		chain_dim2 = 0;
-		chain_dim3 = 0;
+		chain_mu_dim1 = 0;
+		chain_mu_dim2 = 0;
 	}
 
-	NumericMatrix Mu_keep(chain_dim1, chain_dim2);
-	NumericMatrix Sigma_s2_keep(chain_dim1, chain_dim3);
+	NumericMatrix Mu_keep(chain_mu_dim1, chain_mu_dim2);
 
 	// Ranked
 	LogicalMatrix ranked(num_genes, num_studies);
@@ -592,8 +588,7 @@ List cpp_bBiGER(const NumericMatrix &r,
 	
 	NumericMatrix lower = bounds[0];
 	NumericMatrix upper = bounds[1];
-
-	NumericMatrix W = init_w_gibbs(lower, upper, mu, Sigma_s2, ranked);
+	NumericMatrix W = init_w_gibbs(lower, upper, mu, sigma2, ranked);
 
 	for (int m=1; m<iter; m++) {
 
@@ -603,24 +598,24 @@ List cpp_bBiGER(const NumericMatrix &r,
 
 		// Update Mu for each gene
 		for (int g=0; g<num_genes; g++) {
-			NumericVector temp = W(g, _)/Sigma_s2;
+			NumericVector temp = W(g, _)/Sigma_s2(_, m-1);
 			temp = temp[ranked(g,_)];
 			double c = sum(temp);
 
-			temp = 1/Sigma_s2;
+			temp = 1/Sigma_s2(_, m-1);
 			temp = temp[ranked(g,_)];
 			double d =  sum(temp) + 1;
 			Mu(g) = rnorm(1, c/d, sqrt(1/d))(0);
+		}
 
-			if (save_chains & save_burnin) {
-				Mu_keep(m, _) = Mu;
-			}
-			
-			if (m >= burnin) {
-				Mu_post(g) += Mu(g)/iter_kept;
-				if (save_chains & !save_burnin) {
-					Mu_keep(m-burnin, _) = Mu;
-				}
+		if (save_chains & save_burnin) {
+			Mu_keep(_,m) = Mu;
+		}
+		
+		if (m >= burnin) {
+			Mu_post += Mu/iter_kept;
+			if (save_chains & !save_burnin) {
+				Mu_keep(_,m-burnin) = Mu;
 			}
 		}
 
@@ -630,18 +625,7 @@ List cpp_bBiGER(const NumericMatrix &r,
 			temp = temp[ranked(_,s)];
 			double rate = sum(temp)/2+beta;
 			double shape = sum(ranked(_,s))/2+alpha;
-			Sigma_s2(s) = 1/rgamma(1, shape, 1/rate)(0);
-
-			if (save_chains & save_burnin) {
-				Sigma_s2_keep(m, _) = Sigma_s2;
-			}
-
-			if (m >= burnin) {
-				Sigma_s2_post(s) += Sigma_s2(s)/iter_kept;
-				if (save_chains & !save_burnin) {
-					Sigma_s2_keep(m-burnin, _) = Sigma_s2;
-				}
-			}
+			Sigma_s2(s,m) = 1/rgamma(1, shape, 1/rate)(0);
 		}
 
 		// Update W
@@ -650,11 +634,29 @@ List cpp_bBiGER(const NumericMatrix &r,
 				if (ranked(g, s) == 0) {
 					continue;
 				}
-				W(g, s) = RcppTN::rtn1(Mu(g), sqrt(Sigma_s2(s)), lower(g, s), upper(g, s));
+				W(g, s) = RcppTN::rtn1(Mu(g), sqrt(Sigma_s2(s,m)), lower(g, s), upper(g, s));
 			}
 		}
 	}
 
+	// Posterior Median for Sigma2
+	NumericVector Sigma_s2_post(num_studies);
+	NumericVector temp;
+	for (int s=0; s<num_studies; s++) {
+		temp = Sigma_s2(s, _);
+		temp = temp[Range(burnin, iter-1)];
+		Sigma_s2_post(s) = median(temp);
+	}
+
+	// Save Sigma2 if needed
+	NumericMatrix Sigma_s2_keep(0,0);
+	if (save_chains) {
+		if (save_burnin) {
+			Sigma_s2_keep = Sigma_s2;
+		} else {
+			Sigma_s2_keep = Sigma_s2(_, Range(burnin, iter-1));
+		}		
+	}
 
 	List L = List::create(Named("mu_post") = Mu_post,
 						  _["sigma2_post"]  = Sigma_s2_post,

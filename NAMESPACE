@@ -2,6 +2,7 @@
 
 export(BiGER)
 export(bBiGER)
+export(gBiGER)
 export(preprocess_genelist)
-export(vBiGER)
+export(preprocess_seurat)
 useDynLib(BiGER)
