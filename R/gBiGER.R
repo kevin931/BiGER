@@ -63,8 +63,20 @@ gBiGER <- function(r,
     sigma2 <- rep(1, J)
   }
   
+  init_W <- function(r){
+    # Initialize W with ordered N(0,1) consistent with the rankings:
+    # NAs remain NAs.
+    
+    W=matrix(NA,dim(r)[1],dim(r)[2])
+    rownames(W)=1:(dim(r)[1])
+    for (i in 1:dim(r)[2]) {
+      W[order(r[,i],na.last=NA),i]=sort(rnorm(sum(!is.na(r[,i]))),decreasing=TRUE)
+    }
+    return(W)
+  }
+  
   if (is.null(w)) {
-    w <- init_w_r(G, J, r)
+    w <- init_W(r)
   }
   
   results <- list()

@@ -51,7 +51,7 @@ BiGER <- function(r,
     mu <- rnorm(G)
   }
   
-  if (is.null(sigma2)) {
+  if (is.null(sigma2_inv)) {
     sigma2_inv <- rep(1, J)
   }
   

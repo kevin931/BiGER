@@ -180,21 +180,21 @@ List find_boundaries_norm(const NumericMatrix &r,
 	return out;
 }
 
-// [[Rcpp::export]]
-NumericMatrix init_w_r(int num_genes,int num_studies,const NumericMatrix &r) {
-
-	NumericMatrix W(r.rows(), r.cols());
-
-	for (int i=0; i<r.cols(); i++) {
-		NumericVector temp = rnorm(num_genes, 0, 1);
-		std::sort(temp.begin(), temp.end(), std::greater<>());
-		NumericVector order = r(_,i) - 1;
-		temp = temp[order];
-		W(_, i) = temp;
-	}
-
-	return W;
-}
+// // [[Rcpp::export]]
+// NumericMatrix init_w_r(int num_genes,int num_studies,const NumericMatrix &r) {
+// 
+// 	NumericMatrix W(r.rows(), r.cols());
+// 
+// 	for (int i=0; i<r.cols(); i++) {
+// 		NumericVector temp = rnorm(num_genes, 0, 1);
+// 		std::sort(temp.begin(), temp.end(), std::greater<>());
+// 		NumericVector order = r(_,i)-1;
+// 		temp = temp[order];
+// 		W(_, i) = temp;
+// 	}
+// 
+// 	return W;
+// }
 
 
 NumericMatrix init_w(const NumericMatrix &lower,

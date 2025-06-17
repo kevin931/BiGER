@@ -10,19 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// init_w_r
-NumericMatrix init_w_r(int num_genes, int num_studies, const NumericMatrix& r);
-RcppExport SEXP _BiGER_init_w_r(SEXP num_genesSEXP, SEXP num_studiesSEXP, SEXP rSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type num_genes(num_genesSEXP);
-    Rcpp::traits::input_parameter< int >::type num_studies(num_studiesSEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type r(rSEXP);
-    rcpp_result_gen = Rcpp::wrap(init_w_r(num_genes, num_studies, r));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_gBiGER
 List cpp_gBiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, NumericMatrix& W, const NumericVector& mu, const NumericVector& sigma2, const double alpha, const double beta, const bool save_chains, const bool save_burnin, const int iter, const int burnin, const int verbose);
 RcppExport SEXP _BiGER_cpp_gBiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP WSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP save_chainsSEXP, SEXP save_burninSEXP, SEXP iterSEXP, SEXP burninSEXP, SEXP verboseSEXP) {
@@ -92,7 +79,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BiGER_init_w_r", (DL_FUNC) &_BiGER_init_w_r, 3},
     {"_BiGER_cpp_gBiGER", (DL_FUNC) &_BiGER_cpp_gBiGER, 13},
     {"_BiGER_cpp_bBiGER", (DL_FUNC) &_BiGER_cpp_bBiGER, 13},
     {"_BiGER_cpp_BiGER", (DL_FUNC) &_BiGER_cpp_BiGER, 11},
