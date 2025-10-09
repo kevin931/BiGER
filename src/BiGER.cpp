@@ -708,6 +708,7 @@ List cpp_BiGER(const NumericMatrix &r,
 			   double beta=1.0,
 			   const std::string method_bound="normal",
                int max_iter=100,
+			   bool return_mu_s2=false,
 			   double delta=0.0001,
                int verbose=-1) {
 
@@ -797,10 +798,18 @@ List cpp_BiGER(const NumericMatrix &r,
 		}
 	}
 
-	List L = List::create(Named("mu") = m_mu,
-		   				  _["sigma2_inv"]  = e_sigma2_inv,
-						  _["sigma2"] = e_sigma2,
-		   				  _["convergence"] = convergence);
+	if (return_mu_s2) {
+		List L = List::create(Named("mu") = m_mu,
+							_["mu_s2"] = s2_mu,
+							_["sigma2_inv"]  = e_sigma2_inv,
+							_["sigma2"] = e_sigma2,
+							_["convergence"] = convergence);
+	} else {
+		List L = List::create(Named("mu") = m_mu,
+							_["sigma2_inv"]  = e_sigma2_inv,
+							_["sigma2"] = e_sigma2,
+							_["convergence"] = convergence);
+	}
 
 	return L;
 }

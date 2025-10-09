@@ -40,6 +40,7 @@ BiGER <- function(r,
                   beta=1.0,
                   method_bound="normal",
                   max_iter=100,
+                  return_mu_s2=FALSE,
                   delta=0.0001,
                   verbose=-1) {
   
@@ -65,6 +66,7 @@ BiGER <- function(r,
                    beta = beta,
                    method_bound = method_bound,
                    max_iter = max_iter,
+                   return_mu_s2 = return_mu_s2,
                    delta = delta,
                    verbose = verbose))
 }
