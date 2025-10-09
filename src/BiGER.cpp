@@ -798,20 +798,20 @@ List cpp_BiGER(const NumericMatrix &r,
 		}
 	}
 
-	List L = List::create(Named("mu") = m_mu,
-						  _["mu_s2"] = s2_mu,
-						  _["sigma2_inv"]  = e_sigma2_inv,
-						  _["sigma2"] = e_sigma2,
-						  _["convergence"] = convergence);
+	List L;
 
-	// if (return_mu_s2) {
-
-	// } else {
-	// 	L = List::create(Named("mu") = m_mu,
-	// 					 _["sigma2_inv"]  = e_sigma2_inv,
-	// 					 _["sigma2"] = e_sigma2,
-	// 					 _["convergence"] = convergence);
-	// }
+	if (return_mu_s2) {
+		L = List::create(Named("mu") = m_mu,
+						 _["mu_s2"] = s2_mu,
+						 _["sigma2_inv"]  = e_sigma2_inv,
+						 _["sigma2"] = e_sigma2,
+						 _["convergence"] = convergence);
+	} else {
+		L = List::create(Named("mu") = m_mu,
+						 _["sigma2_inv"]  = e_sigma2_inv,
+						 _["sigma2"] = e_sigma2,
+						 _["convergence"] = convergence);
+	}
 
 	return L;
 }
