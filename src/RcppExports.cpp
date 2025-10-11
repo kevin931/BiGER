@@ -57,8 +57,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_BiGER
-List cpp_BiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2_inv, double alpha, double beta, const std::string method_bound, int max_iter, double delta, int verbose);
-RcppExport SEXP _BiGER_cpp_BiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2_invSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP method_boundSEXP, SEXP max_iterSEXP, SEXP deltaSEXP, SEXP verboseSEXP) {
+List cpp_BiGER(const NumericMatrix& r, const NumericVector& n_r, const NumericVector& n_u, const NumericVector& mu, const NumericVector& sigma2_inv, double alpha, double beta, const std::string method_bound, int max_iter, const int return_mu_s2, double delta, int verbose);
+RcppExport SEXP _BiGER_cpp_BiGER(SEXP rSEXP, SEXP n_rSEXP, SEXP n_uSEXP, SEXP muSEXP, SEXP sigma2_invSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP method_boundSEXP, SEXP max_iterSEXP, SEXP return_mu_s2SEXP, SEXP deltaSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -71,9 +71,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
     Rcpp::traits::input_parameter< const std::string >::type method_bound(method_boundSEXP);
     Rcpp::traits::input_parameter< int >::type max_iter(max_iterSEXP);
+    Rcpp::traits::input_parameter< const int >::type return_mu_s2(return_mu_s2SEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< int >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_BiGER(r, n_r, n_u, mu, sigma2_inv, alpha, beta, method_bound, max_iter, delta, verbose));
+    rcpp_result_gen = Rcpp::wrap(cpp_BiGER(r, n_r, n_u, mu, sigma2_inv, alpha, beta, method_bound, max_iter, return_mu_s2, delta, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -81,7 +82,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_BiGER_cpp_gBiGER", (DL_FUNC) &_BiGER_cpp_gBiGER, 13},
     {"_BiGER_cpp_bBiGER", (DL_FUNC) &_BiGER_cpp_bBiGER, 13},
-    {"_BiGER_cpp_BiGER", (DL_FUNC) &_BiGER_cpp_BiGER, 11},
+    {"_BiGER_cpp_BiGER", (DL_FUNC) &_BiGER_cpp_BiGER, 12},
     {NULL, NULL, 0}
 };
 

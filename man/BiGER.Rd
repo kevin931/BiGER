@@ -14,6 +14,7 @@ BiGER(
   beta = 1,
   method_bound = "normal",
   max_iter = 100,
+  return_mu_s2 = FALSE,
   delta = 1e-04,
   verbose = -1
 )

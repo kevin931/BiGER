@@ -9,7 +9,7 @@ cpp_bBiGER <- function(r, n_r, n_u, mu, sigma2, alpha = 1.0, beta = 1.0, method_
     .Call('_BiGER_cpp_bBiGER', PACKAGE = 'BiGER', r, n_r, n_u, mu, sigma2, alpha, beta, method_bound, save_chains, save_burnin, iter, burnin, verbose)
 }
 
-cpp_BiGER <- function(r, n_r, n_u, mu, sigma2_inv, alpha = 1.0, beta = 1.0, method_bound = "normal", max_iter = 100L, delta = 0.0001, verbose = -1L) {
-    .Call('_BiGER_cpp_BiGER', PACKAGE = 'BiGER', r, n_r, n_u, mu, sigma2_inv, alpha, beta, method_bound, max_iter, delta, verbose)
+cpp_BiGER <- function(r, n_r, n_u, mu, sigma2_inv, alpha = 1.0, beta = 1.0, method_bound = "normal", max_iter = 100L, return_mu_s2 = 0L, delta = 0.0001, verbose = -1L) {
+    .Call('_BiGER_cpp_BiGER', PACKAGE = 'BiGER', r, n_r, n_u, mu, sigma2_inv, alpha, beta, method_bound, max_iter, return_mu_s2, delta, verbose)
 }
 
